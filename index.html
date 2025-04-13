@@ -36,51 +36,53 @@
 
     <!-- Script JavaScript -->
     <script>
-        // Captura o formulário e a modal
-        const form = document.getElementById('form-lancamento');
-        const modal = document.getElementById('modal');
-        const closeModal = document.getElementById('close-modal');
+// Captura o formulário e a modal
+const form = document.getElementById('form-lancamento');
+const modal = document.getElementById('modal');
+const closeModal = document.getElementById('close-modal');
+const msgConfirmacao = document.getElementById('msg-confirmacao');
 
-        // Função para abrir o modal
-        function openModal() {
-            modal.style.display = "flex";
+// Função para abrir o modal
+function openModal(message) {
+    msgConfirmacao.textContent = message;
+    modal.style.display = "flex";
+}
+
+// Função para fechar o modal
+function closeModalWindow() {
+    modal.style.display = "none";
+}
+
+// Adiciona o evento de clique no botão de fechar
+closeModal.addEventListener('click', closeModalWindow);
+
+// Intercepta o envio do formulário
+form.addEventListener('submit', function(event) {
+    event.preventDefault();  // Impede o redirecionamento da página
+
+    // Cria um objeto FormData com os dados do formulário
+    const formData = new FormData(form);
+
+    // Envia os dados para o servidor usando fetch
+    fetch('/enviar', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Exibe o modal de sucesso
+            openModal(data.message);
+        } else {
+            // Exibe o modal de erro (caso haja erro)
+            openModal('Erro ao enviar dados. Tente novamente!');
         }
-
-        // Função para fechar o modal
-        function closeModalWindow() {
-            modal.style.display = "none";
-        }
-
-        // Adiciona o evento de clique no botão de fechar
-        closeModal.addEventListener('click', closeModalWindow);
-
-        // Intercepta o envio do formulário
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();  // Impede o redirecionamento da página
-
-            // Cria um objeto FormData com os dados do formulário
-            const formData = new FormData(form);
-
-            // Envia os dados para o servidor usando fetch
-            fetch('/enviar', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Exibe o modal de sucesso se a resposta for positiva
-                    openModal();
-                } else {
-                    // Caso haja erro, você pode exibir outra mensagem de erro
-                    console.error('Erro ao enviar dados');
-                    alert('Erro ao enviar dados');
-                }
-            })
-            .catch(error => {
-                console.error('Erro na requisição:', error);
-                alert('Erro ao enviar dados');
-            });
-        });
+    })
+    .catch(error => {
+        console.error('Erro na requisição:', error);
+        openModal('Erro ao enviar dados. Tente novamente!');
+    });
+});
     </script>
 </body>
 </html>
