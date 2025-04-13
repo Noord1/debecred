@@ -34,6 +34,46 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- JavaScript -->
+    <script>
+        // Captura o formulário e a modal
+        const form = document.getElementById('form-lancamento');
+        const modal = document.getElementById('modal');
+        const closeModal = document.getElementById('close-modal');
+
+        // Função para abrir o modal
+        function openModal() {
+            modal.style.display = "flex";
+        }
+
+        // Função para fechar o modal
+        function closeModalWindow() {
+            modal.style.display = "none";
+        }
+
+        // Adiciona o evento de clique no botão de fechar
+        closeModal.addEventListener('click', closeModalWindow);
+
+        // Intercepta o envio do formulário
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();  // Impede o redirecionamento da página
+
+            // Exibe a mensagem de confirmação
+            openModal();
+
+            // Aqui você pode enviar os dados do formulário para o servidor, se necessário.
+            // Exemplo de como poderia ser feito usando fetch:
+            // fetch('/enviar', {
+            //     method: 'POST',
+            //     body: new FormData(form)
+            // }).then(response => response.json())
+            //   .then(data => {
+            //       console.log(data);
+            //       openModal();
+            //   }).catch(error => {
+            //       console.error('Erro ao enviar:', error);
+            //   });
+        });
+    </script>
 </body>
 </html>
