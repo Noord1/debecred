@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const fetch = require('node-fetch');
+const fetch = require('node-fetch');  // Importação do fetch
 const app = express();
 const port = process.env.PORT || 10000;
 
@@ -22,10 +22,10 @@ app.post('/enviar', async (req, res) => {
   console.log('Mensagem:', mensagem); // Verificando a mensagem
 
   try {
-    const response = await fetch(`https://api.telegram.org/bot7942455440:AAFDmOasKnwRxzHkoe2ogl-OuevNhU_GYV8/sendMessage`, {
+    const response = await fetch(`https://api.telegram.org/bot<SEU_TOKEN>/sendMessage`, {
       method: 'POST',
       body: JSON.stringify({
-        chat_id: '-1002423185408', // Coloque seu chat_id aqui
+        chat_id: '<SEU_CHAT_ID>', // Substitua com o seu chat_id
         text: mensagem
       }),
       headers: {
