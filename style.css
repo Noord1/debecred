@@ -34,12 +34,14 @@ label {
 
 input, select {
     width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
+    padding: 12px; /* aumentado para dar mais conforto visual */
+    margin-bottom: 15px;
     border-radius: 4px;
     border: 1px solid #ccc;
+    box-sizing: border-box; /* garante que padding não quebre o layout */
 }
 
+/* Botão de envio */
 button {
     background-color: #0072c6;
     color: white;
@@ -69,6 +71,7 @@ button:hover {
     justify-content: center;
 }
 
+/* Conteúdo da modal */
 .modal-content {
     background-color: white;
     padding: 30px 20px;
