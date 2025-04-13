@@ -58,10 +58,28 @@
         form.addEventListener('submit', function(event) {
             event.preventDefault();  // Impede o redirecionamento da página
 
-            // Exibe a mensagem de confirmação
-            openModal();
+            // Cria um objeto FormData com os dados do formulário
+            const formData = new FormData(form);
 
-            // Aqui você pode enviar os dados do formulário para o servidor, se necessário.
+            // Envia os dados para o servidor usando fetch
+            fetch('/enviar', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Exibe o modal de sucesso se a resposta for positiva
+                    openModal();
+                } else {
+                    // Caso haja erro, você pode exibir outra mensagem de erro
+                    console.error('Erro ao enviar dados');
+                    alert('Erro ao enviar dados');
+                }
+            })
+            .catch(error => {
+                console.error('Erro na requisição:', error);
+                alert('Erro ao enviar dados');
+            });
         });
     </script>
 </body>
