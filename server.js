@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const fetch = require('node-fetch');  // Importação do fetch
 const app = express();
 const port = process.env.PORT || 10000;
 
