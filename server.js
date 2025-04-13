@@ -1,7 +1,15 @@
 const express = require('express');
 const path = require('path');
+const fetch = require('node-fetch');
 const app = express();
 const port = process.env.PORT || 10000;
+
+// Token do bot
+const token = '7942455440:AAFDmOasKnwRxzHkoe2ogl-OuevNhU_GYV8'; // Substitua com seu token real
+// Chat ID
+const chatId = '-1002423185408'; // Substitua com seu chat_id real
+// ID do tópico
+const messageThreadId = 3; // Substitua com o ID correto do tópico
 
 // Middleware para servir arquivos estáticos e processar formulários
 app.use(express.static(__dirname));
@@ -21,11 +29,12 @@ app.post('/enviar', async (req, res) => {
   console.log('Mensagem:', mensagem); // Verificando a mensagem
 
   try {
-    const response = await fetch(`https://api.telegram.org/bot7942455440:AAFDmOasKnwRxzHkoe2ogl-OuevNhU_GYV8/sendMessage`, {
+    const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST',
       body: JSON.stringify({
-        chat_id: '-1002423185408', // Substitua com o seu chat_id
-        text: mensagem
+        chat_id: chatId, // Usando o chat_id correto
+        text: mensagem,
+        message_thread_id: messageThreadId // Enviando para o tópico correto
       }),
       headers: {
         'Content-Type': 'application/json'
