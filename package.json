@@ -1,0 +1,24 @@
+{
+  "name": "debecred",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Noord1/debecred.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Noord1/debecred/issues"
+  },
+  "homepage": "https://github.com/Noord1/debecred#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
