@@ -1,25 +1,19 @@
 {
   "name": "debecred",
   "version": "1.0.0",
+  "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Noord1/debecred.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Noord1/debecred/issues"
-  },
-  "homepage": "https://github.com/Noord1/debecred#readme",
-  "description": "",
   "dependencies": {
-    "express": "^5.1.0",
-    "node-fetch": "^3.3.2"
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
