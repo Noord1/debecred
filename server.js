@@ -23,8 +23,15 @@ app.get('/', (req, res) => {
 
 // Rota POST para enviar dados ao Telegram
 app.post('/enviar', async (req, res) => {
-  const { nome, valor, tipo } = req.body;
-  let mensagem = `${tipo === 'debito' ? '🟥' : '🟩'} ${nome} R$ ${valor}`;
+  const { nome, valor, tipo } = req.body;  // Aqui estamos pegando os dados do corpo da requisição
+  if (!nome || !valor || !tipo) {
+    return res.status(400).json({ success: false, message: 'Dados faltando no formulário.' });
+  }
+
+  // Verificando se tipo é débito ou crédito e atribuindo o emoji correto
+  let emoji = tipo === 'debito' ? '🟥' : '🟩';
+
+  let mensagem = `${emoji} ${nome} R$ ${valor}`;
 
   console.log('Mensagem:', mensagem); // Verificando a mensagem
 
