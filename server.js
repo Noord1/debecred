@@ -21,10 +21,10 @@ app.post('/enviar', async (req, res) => {
   console.log('Mensagem:', mensagem); // Verificando a mensagem
 
   try {
-    const response = await fetch(`https://api.telegram.org/bot<SEU_TOKEN>/sendMessage`, {
+    const response = await fetch(`https://api.telegram.org/bot7942455440:AAFDmOasKnwRxzHkoe2ogl-OuevNhU_GYV8/sendMessage`, {
       method: 'POST',
       body: JSON.stringify({
-        chat_id: '<SEU_CHAT_ID>', // Substitua com o seu chat_id
+        chat_id: '-1002423185408', // Substitua com o seu chat_id
         text: mensagem
       }),
       headers: {
