@@ -45,14 +45,15 @@ app.post('/enviar', async (req, res) => {
     console.log('Resposta do Telegram:', data); // Verificando a resposta
 
     if (data.ok) {
-      res.send('Mensagem enviada com sucesso!');
+      // Envia uma resposta de sucesso em formato JSON
+      res.json({ success: true, message: 'Lançamento enviado com sucesso!' });
     } else {
       console.error('Erro na resposta do Telegram:', data); // Erro na resposta
-      res.status(500).send('Erro ao enviar mensagem.');
+      res.status(500).json({ success: false, message: 'Erro ao enviar mensagem.' });
     }
   } catch (error) {
     console.error('Erro ao enviar mensagem:', error); // Erro no servidor
-    res.status(500).send('Erro ao enviar mensagem.');
+    res.status(500).json({ success: false, message: 'Erro ao enviar mensagem.' });
   }
 });
 
