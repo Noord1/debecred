@@ -1,89 +1,96 @@
-/* Resetando margens e padding */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* Estilo do corpo da página */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: 100vh;
-    text-align: center;
+    background-color: #f4f4f9;
 }
 
+/* Estilo do título */
 h1 {
-    margin-bottom: 20px;
+    margin-top: 20px;
     color: #333;
+    font-size: 2em;
 }
 
+/* Estilo do formulário */
 form {
-    background-color: #fff;
+    background-color: white;
     padding: 20px;
+    margin-top: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 300px;
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
-label {
-    display: block;
-    margin-bottom: 8px;
-    text-align: left;
-    color: #555;
+/* Estilo dos campos do formulário */
+form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 1em;
 }
 
-input, select, button {
-    width: 100%;
+form select, form input {
     padding: 10px;
-    margin-bottom: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
 }
 
-button {
-    background-color: #4CAF50;
+/* Estilo do botão */
+form button {
+    background-color: #28a745;
     color: white;
+    padding: 10px;
+    font-size: 1.1em;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #45a049;
+form button:hover {
+    background-color: #218838;
 }
 
 /* Estilo do modal */
 .modal {
-    display: none;
+    display: none; /* Escondido por padrão */
     position: fixed;
-    top: 0;
+    z-index: 1;
     left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
-    z-index: 1;
+    align-items: center;
 }
 
+/* Conteúdo do modal */
 .modal-content {
     background-color: white;
-    padding: 20px;
+    padding: 30px;
     border-radius: 8px;
-    width: 300px;
     text-align: center;
+    width: 300px;
 }
 
+/* Estilo do botão de fechar */
 .close {
-    font-size: 1.5rem;
-    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5em;
     cursor: pointer;
+    color: #333;
 }
 
 .close:hover {
-    color: #333;
+    color: #f00;
 }
