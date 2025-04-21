@@ -1,110 +1,153 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle Financeiro</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Controle Financeiro</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>Controle Financeiro</h1>
+  <h1>Controle Financeiro</h1>
 
-    <form id="form-lancamento">
-        <label for="tipo">Tipo de Lançamento:</label>
-        <select name="tipo" id="tipo" required>
-            <option value="debito">Débito</option>
-            <option value="credito">Crédito</option>
-        </select>
+  <!-- Abas -->
+  <div style="margin-bottom: 20px;">
+    <button onclick="trocarAba('apostas')" id="btn-apostas" style="margin-right: 5px;">Apostas</button>
+    <button onclick="trocarAba('financas')" id="btn-financas">Finanças</button>
+  </div>
 
-        <label for="nome">Nome do Lançamento:</label>
-        <input type="text" id="nome" name="nome" required>
+  <!-- Formulário APOSTAS -->
+  <form id="form-apostas">
+    <input type="hidden" name="aba" value="apostas">
+    
+    <label for="tipoA">Tipo:</label>
+    <select name="tipo" id="tipoA">
+      <option value="debito">Débito</option>
+      <option value="credito">Crédito</option>
+    </select>
 
-        <label for="valor">Valor (R$):</label>
-        <input type="text" id="valor" name="valor" required>
+    <label for="nomeA">Casa:</label>
+    <input type="text" name="nome" id="nomeA" required>
 
-        <label for="banco">Banco:</label>
-        <input type="text" id="banco" name="banco">
+    <label for="usuario">Usuário:</label>
+    <input type="text" name="usuario" id="usuario">
 
-        <label for="data">Data:</label>
-        <input type="date" id="data" name="data">
+    <label for="valorA">Valor:</label>
+    <input type="text" name="valor" id="valorA" required oninput="formatarMoeda(this)">
 
-        <label for="hora">Hora:</label>
-        <input type="time" id="hora" name="hora">
+    <label for="bancoA">Banco:</label>
+    <input type="text" name="banco" id="bancoA">
 
-        <button type="submit">Enviar</button>
-    </form>
+    <label for="dataA">Data:</label>
+    <input type="date" name="data" id="dataA">
 
-    <!-- Modal de Confirmação -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="close-modal">&times;</span>
-            <p id="msg-confirmacao">Lançamento enviado com sucesso!</p>
-        </div>
+    <label for="horaA">Hora:</label>
+    <input type="time" name="hora" id="horaA">
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <!-- Formulário FINANÇAS -->
+  <form id="form-financas" style="display:none;">
+    <input type="hidden" name="aba" value="financas">
+
+    <label for="tipoF">Tipo:</label>
+    <select name="tipo" id="tipoF">
+      <option value="debito">Débito</option>
+      <option value="credito">Crédito</option>
+    </select>
+
+    <label for="nomeF">Nome do Lançamento:</label>
+    <input type="text" name="nome" id="nomeF" required>
+
+    <label for="valorF">Valor:</label>
+    <input type="text" name="valor" id="valorF" required oninput="formatarMoeda(this)">
+
+    <label for="bancoF">Banco:</label>
+    <input type="text" name="banco" id="bancoF">
+
+    <label for="dataF">Data:</label>
+    <input type="date" name="data" id="dataF">
+
+    <label for="horaF">Hora:</label>
+    <input type="time" name="hora" id="horaF">
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <!-- Modal de Sucesso -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="close" onclick="fecharModal()">&times;</span>
+      <p id="modal-mensagem"></p>
     </div>
+  </div>
 
-    <!-- Script JavaScript -->
-    <script>
-  // Formatação em tempo real do campo Valor
-  function formatarMoeda(event) {
-    let v = event.target.value.replace(/\D/g, '');
-    v = (v / 100).toFixed(2) + '';
-    let [inteiro, decimal] = v.split('.');
-    inteiro = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    event.target.value = 'R$ ' + inteiro + ',' + decimal;
+  <script>
+  // Trocar entre as abas "Apostas" e "Finanças"
+  function trocarAba(aba) {
+    document.getElementById('form-apostas').style.display = aba === 'apostas' ? 'block' : 'none';
+    document.getElementById('form-financas').style.display = aba === 'financas' ? 'block' : 'none';
+
+    document.getElementById('btn-apostas').style.backgroundColor = aba === 'apostas' ? '#0072c6' : '';
+    document.getElementById('btn-apostas').style.color = aba === 'apostas' ? '#fff' : '';
+    document.getElementById('btn-financas').style.backgroundColor = aba === 'financas' ? '#0072c6' : '';
+    document.getElementById('btn-financas').style.color = aba === 'financas' ? '#fff' : '';
   }
-  const campoValor = document.getElementById('valor');
-  campoValor.addEventListener('input', formatarMoeda);
 
-  // Captura referências
-  const form = document.getElementById('form-lancamento');
-  const modal = document.getElementById('modal');
-  const closeModal = document.getElementById('close-modal');
-  const msgConfirm = document.getElementById('msg-confirmacao');
-
-  function openModal(text) {
-    msgConfirm.textContent = text;
-    modal.style.display = 'flex';
+  // Fecha o modal de confirmação
+  function fecharModal() {
+    document.getElementById('modal').style.display = 'none';
   }
-  function closeModalWindow() {
-    modal.style.display = 'none';
+
+  // Máscara de moeda BRL para exibição
+  function formatarMoeda(input) {
+    let valor = input.value.replace(/\D/g, ""); // Remove não números
+    if (valor.length < 3) {
+      valor = valor.padStart(3, "0");
+    }
+    let int = valor.slice(0, -2);
+    let dec = valor.slice(-2);
+    let formatado = Number(int).toLocaleString('pt-BR') + "," + dec;
+    input.value = "R$ " + formatado;
   }
-  closeModal.addEventListener('click', closeModalWindow);
 
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
+  // Limpar valor para envio (ex: "R$ 1.000,00" → "1000.00")
+  function obterValorLimpo(input) {
+    const raw = input.value.replace(/[^\d]/g, '');
+    const inteiro = raw.slice(0, -2);
+    const decimal = raw.slice(-2);
+    return `${parseInt(inteiro || 0)}.${decimal}`;
+  }
 
-    // Monta o payload
-    const tipo  = form.tipo.value;
-    const nome  = form.nome.value;
-    // Limpa "R$ " e separadores
-    let raw  = campoValor.value;
-    raw      = raw.replace(/\s|R\$|\./g, '').replace(',', '.'); 
-    const valor = raw; 
+  // Submissão dos dois formulários
+  ['form-apostas', 'form-financas'].forEach(id => {
+    document.getElementById(id).addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const dados = Object.fromEntries(new FormData(form).entries());
 
-    const banco = form.banco.value || '';
-    const data  = form.data.value  || '';
-    const hora  = form.hora.value  || '';
+      // Corrige valor formatado
+      const inputValor = form.querySelector('input[name="valor"]');
+      dados.valor = obterValorLimpo(inputValor);
 
-    const payload = { tipo, nome, valor, banco, data, hora };
-
-    try {
-      const res = await fetch('/enviar', {
+      const resposta = await fetch('/enviar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(dados)
       });
-      const json = await res.json();
-      if (json.success) {
-        openModal(json.message);
-        form.reset();
-      } else {
-        openModal('Erro: ' + json.message);
-      }
-    } catch (err) {
-      console.error(err);
-      openModal('Erro ao enviar dados. Tente novamente!');
-    }
+
+      const resultado = await resposta.json();
+      document.getElementById('modal-mensagem').textContent = resultado.message;
+      document.getElementById('modal').style.display = 'flex';
+      if (resultado.success) form.reset();
+    });
   });
+
+  // Ativar aba padrão
+  trocarAba('apostas');
 </script>
+
+
+
 </body>
 </html>

@@ -20,31 +20,31 @@ app.get('/', (req, res) => {
 });
 
 app.post('/enviar', async (req, res) => {
-  const { tipo, nome, valor, banco, data, hora } = req.body;
+  const { tipo, nome, valor, banco, data, hora, aba, usuario } = req.body;
 
   if (!tipo || !nome || !valor) {
     return res.status(400).json({ success: false, message: 'Preencha tipo, nome e valor.' });
   }
 
-  // Emoji conforme tipo
   const emoji = tipo === 'debito' ? '🟥' : '🟩';
 
-  // Formatação do valor em pt-BR (milhar e decimal)
   const numero = parseFloat(valor);
   const partes = numero.toFixed(2).split('.');
   const inteiroComPonto = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   const valorBr = `${inteiroComPonto},${partes[1]}`;
 
-  // Monta a mensagem inicial
-  let mensagem = `${emoji} ${nome} R$ ${valorBr}`;
-
-  // Adiciona opcionalmente data, banco e hora, tudo na mesma linha
+  // Montar mensagem no formato solicitado
+  let mensagem = `${emoji} ${nome}`;
+  if (aba === 'apostas' && usuario) {
+    mensagem += ` ${usuario}`;
+  }
+  mensagem += ` R$ ${valorBr}`;
+  if (banco) {
+    mensagem += ` 🏦 ${banco}`;
+  }
   if (data) {
     const [ano, mes, dia] = data.split('-');
     mensagem += ` 📅 ${dia}/${mes}/${ano}`;
-  }
-  if (banco) {
-    mensagem += ` 🏦 ${banco}`;
   }
   if (hora) {
     mensagem += ` ⏰ ${hora}`;
