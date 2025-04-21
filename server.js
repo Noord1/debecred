@@ -5,65 +5,79 @@ const app = express();
 const port = process.env.PORT || 10000;
 
 // Token do bot
-const token = '7942455440:AAFDmOasKnwRxzHkoe2ogl-OuevNhU_GYV8'; // Substitua com seu token real
+const token = '7942455440:AAFDmOasKnwRxzHkoe2ogl-OuevNhU_GYV8';
 // Chat ID
-const chatId = '-1002423185408'; // Substitua com seu chat_id real
-// ID do tópico
-const messageThreadId = 3; // Substitua com o ID correto do tópico
+const chatId = '-1002423185408';
+// ID do tópico (Controle Financeiro)
+const messageThreadId = 3;
 
-// Middleware para servir arquivos estáticos e processar formulários
 app.use(express.static(__dirname));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Rota principal
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Rota POST para enviar dados ao Telegram
 app.post('/enviar', async (req, res) => {
-  const { nome, valor, tipo } = req.body;  // Aqui estamos pegando os dados do corpo da requisição
-  if (!nome || !valor || !tipo) {
-    return res.status(400).json({ success: false, message: 'Dados faltando no formulário.' });
+  const { tipo, nome, valor, banco, data, hora } = req.body;
+
+  if (!tipo || !nome || !valor) {
+    return res.status(400).json({ success: false, message: 'Preencha tipo, nome e valor.' });
   }
 
-  // Verificando se tipo é débito ou crédito e atribuindo o emoji correto
-  let emoji = tipo === 'debito' ? '🟥' : '🟩';
+  // Emoji conforme tipo
+  const emoji = tipo === 'debito' ? '🟥' : '🟩';
 
-  let mensagem = `${emoji} ${nome} R$ ${valor}`;
+  // Formatação do valor em pt-BR (milhar e decimal)
+  const numero = parseFloat(valor);
+  const partes = numero.toFixed(2).split('.');
+  const inteiroComPonto = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  const valorBr = `${inteiroComPonto},${partes[1]}`;
 
-  console.log('Mensagem:', mensagem); // Verificando a mensagem
+  // Monta a mensagem inicial
+  let mensagem = `${emoji} ${nome} R$ ${valorBr}`;
+
+  // Adiciona opcionalmente data, banco e hora, tudo na mesma linha
+  if (data) {
+    const [ano, mes, dia] = data.split('-');
+    mensagem += ` 📅 ${dia}/${mes}/${ano}`;
+  }
+  if (banco) {
+    mensagem += ` 🏦 ${banco}`;
+  }
+  if (hora) {
+    mensagem += ` ⏰ ${hora}`;
+  }
+
+  console.log('Mensagem a enviar:', mensagem);
 
   try {
     const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        chat_id: chatId, // Usando o chat_id correto
+        chat_id: chatId,
         text: mensagem,
-        message_thread_id: messageThreadId // Enviando para o tópico correto
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
+        message_thread_id: messageThreadId
+      })
     });
 
-    const data = await response.json();
-    console.log('Resposta do Telegram:', data); // Verificando a resposta
+    const result = await response.json();
+    console.log('Resposta do Telegram:', result);
 
-    if (data.ok) {
-      // Envia uma resposta de sucesso em formato JSON
-      res.json({ success: true, message: 'Lançamento enviado com sucesso!' });
+    if (result.ok) {
+      return res.json({ success: true, message: 'Lançamento enviado com sucesso!' });
     } else {
-      console.error('Erro na resposta do Telegram:', data); // Erro na resposta
-      res.status(500).json({ success: false, message: 'Erro ao enviar mensagem.' });
+      console.error('Erro no Telegram:', result);
+      return res.status(500).json({ success: false, message: 'Erro ao enviar para o Telegram.' });
     }
-  } catch (error) {
-    console.error('Erro ao enviar mensagem:', error); // Erro no servidor
-    res.status(500).json({ success: false, message: 'Erro ao enviar mensagem.' });
+  } catch (err) {
+    console.error('Erro na requisição:', err);
+    return res.status(500).json({ success: false, message: 'Erro interno no servidor.' });
   }
 });
 
 app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
+  console.log(`Servidor rodando em http://localhost:${port}`);
 });

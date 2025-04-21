@@ -9,7 +9,6 @@
 <body>
     <h1>Controle Financeiro</h1>
 
-    <!-- Formulário -->
     <form id="form-lancamento">
         <label for="tipo">Tipo de Lançamento:</label>
         <select name="tipo" id="tipo" required>
@@ -21,7 +20,16 @@
         <input type="text" id="nome" name="nome" required>
 
         <label for="valor">Valor (R$):</label>
-        <input type="number" id="valor" name="valor" step="0.01" required>
+        <input type="text" id="valor" name="valor" required>
+
+        <label for="banco">Banco:</label>
+        <input type="text" id="banco" name="banco">
+
+        <label for="data">Data:</label>
+        <input type="date" id="data" name="data">
+
+        <label for="hora">Hora:</label>
+        <input type="time" id="hora" name="hora">
 
         <button type="submit">Enviar</button>
     </form>
@@ -36,55 +44,67 @@
 
     <!-- Script JavaScript -->
     <script>
-    const form = document.getElementById('form-lancamento');
-    const modal = document.getElementById('modal');
-    const closeModal = document.getElementById('close-modal');
-    const msgConfirmacao = document.getElementById('msg-confirmacao');
+  // Formatação em tempo real do campo Valor
+  function formatarMoeda(event) {
+    let v = event.target.value.replace(/\D/g, '');
+    v = (v / 100).toFixed(2) + '';
+    let [inteiro, decimal] = v.split('.');
+    inteiro = inteiro.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    event.target.value = 'R$ ' + inteiro + ',' + decimal;
+  }
+  const campoValor = document.getElementById('valor');
+  campoValor.addEventListener('input', formatarMoeda);
 
-    function openModal(message) {
-        msgConfirmacao.textContent = message;
-        modal.style.display = "flex";
+  // Captura referências
+  const form = document.getElementById('form-lancamento');
+  const modal = document.getElementById('modal');
+  const closeModal = document.getElementById('close-modal');
+  const msgConfirm = document.getElementById('msg-confirmacao');
+
+  function openModal(text) {
+    msgConfirm.textContent = text;
+    modal.style.display = 'flex';
+  }
+  function closeModalWindow() {
+    modal.style.display = 'none';
+  }
+  closeModal.addEventListener('click', closeModalWindow);
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Monta o payload
+    const tipo  = form.tipo.value;
+    const nome  = form.nome.value;
+    // Limpa "R$ " e separadores
+    let raw  = campoValor.value;
+    raw      = raw.replace(/\s|R\$|\./g, '').replace(',', '.'); 
+    const valor = raw; 
+
+    const banco = form.banco.value || '';
+    const data  = form.data.value  || '';
+    const hora  = form.hora.value  || '';
+
+    const payload = { tipo, nome, valor, banco, data, hora };
+
+    try {
+      const res = await fetch('/enviar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const json = await res.json();
+      if (json.success) {
+        openModal(json.message);
+        form.reset();
+      } else {
+        openModal('Erro: ' + json.message);
+      }
+    } catch (err) {
+      console.error(err);
+      openModal('Erro ao enviar dados. Tente novamente!');
     }
-
-    function closeModalWindow() {
-        modal.style.display = "none";
-    }
-
-    closeModal.addEventListener('click', closeModalWindow);
-
-    form.addEventListener('submit', function (event) {
-        event.preventDefault();
-
-        const tipo = document.getElementById('tipo').value;
-        const nome = document.getElementById('nome').value;
-        const valor = document.getElementById('valor').value;
-
-        const body = new URLSearchParams();
-        body.append('tipo', tipo);
-        body.append('nome', nome);
-        body.append('valor', valor);
-
-        fetch('/enviar', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: body.toString()
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    openModal(data.message);
-                    form.reset(); // limpa os campos
-                } else {
-                    openModal('Erro ao enviar dados. Tente novamente!');
-                }
-            })
-            .catch(error => {
-                console.error('Erro na requisição:', error);
-                openModal('Erro ao enviar dados. Tente novamente!');
-            });
-    });
+  });
 </script>
 </body>
 </html>
